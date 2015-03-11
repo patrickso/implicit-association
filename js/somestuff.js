@@ -1,5 +1,4 @@
 $('#redx').hide();
-$('#results').hide();
 $('#pic1').hide();
 var start = 0;
 var counter = 0;
@@ -8,16 +7,19 @@ var cur = null
 var items = []
 var dis = []
 var har = []
-var din = []
-var des = []
-var hardes = 0;
-var hardin = 0;
-var disdes = 0;
-var disdin = 0;
+var bad = []
+var good = []
+var hargood = 0;
+var harbad = 0;
+var disgood = 0;
+var disbad = 0;
 var round = 1
-var E = 'Dinner'
-var I = 'Dessert'
+var E = 'Bad Emotions'
+var I = 'Good Emotions'
 $(document).bind('keydown',function(e){
+	if (start == 2){
+		return;
+}
 	if (start == 0){
 		if (e.keyCode == 13){
 			start = 1;
@@ -33,48 +35,38 @@ $(document).bind('keydown',function(e){
 }
 });
 
-function getPic(){
-if (cur == hamburger){
-	cur = icecream;
-	return icecream;
-} 
-else{
-	cur = hamburger;
-	return hamburger;
-}
-}
 
 function startRound(x){
 	if (x==1){
-		createItems([din,des]);
+		createItems([good,bad]);
 		E = 'Dissonance'
 		I = 'Harmony'
 			
 }
 	if (x==2){
 		createItems([dis,har]);
-		E = 'Dinner or Dissonance'
-		I = 'Dessert or Harmony'
+		E = 'Bad Emotions or Dissonance'
+		I = 'Good Emotions or Harmony'
 
 	}
 	if (x==3){
-		createItems([dis,har,des,din])
-		E = 'Dessert'
-		I = 'Dinner'
+		createItems([dis,har,good,bad])
+		E = 'Good Emotions'
+		I = 'Bad Emotions'
 }
 	if (x==4){
-		createItems([des,din])
+		createItems([good,bad])
 		E = 'Dissonance'
 		I = 'Harmony'
 }
 	if (x==5){
 		createItems([har,dis])
-		E = 'Dessert or Dissonance'
-		I = 'Dinner or Harmony'
+		E = 'Good Emotions or Dissonance'
+		I = 'Bad Emotions or Harmony'
 		
 }
 	if (x==6){
-		createItems([des,din,har,dis])
+		createItems([good,bad,har,dis])
 	
 }
 }
@@ -82,24 +74,24 @@ function startRound(x){
 function checkA(code){
 if (round<4){
 	if (code == 73){
-		if (cur.a == icecream.a || cur.a == har1.a){
+		if (cur.a == good[0].a || cur.a == har[0].a){
 			changePicture(items[counter]);
 			$('#redx').hide();
 			increaseCount();
 }
 	else{
 		if(round == 3 || round == 6){
-			if (cur.a == 'dinner'){
-				hardin++;
+			if (cur.a == 'bad'){
+				harbad++;
 }
 			if (cur.a == 'dissonance'){
-				disdes++;
+				disgood++;
 }}
 
 		$('#redx').show();
 	}}
 	if (code == 69){
-		if(cur.a == hamburger.a || cur.a == dis1.a){
+		if(cur.a == bad[0].a || cur.a == dis[0].a){
 			changePicture(items[counter]);
 			$('#redx').hide();
 			increaseCount();
@@ -108,11 +100,11 @@ if (round<4){
 }
 		else{
 		if(round == 3 || round == 6){
-			if (cur.a == 'dessert'){
-				disdes++;
+			if (cur.a == 'good'){
+				disgood++;
 }
 			if (cur.a == 'harmony'){
-				hardin++;
+				harbad++;
 }}
 
 			$('#redx').show();
@@ -123,7 +115,7 @@ if (round<4){
 }
 else{
 	if (code == 69){
-		if (cur.a == icecream.a || cur.a == dis1.a){
+		if (cur.a == good[0].a || cur.a == dis[0].a){
 			changePicture(items[counter]);
 			$('#redx').hide();
 			increaseCount();
@@ -132,17 +124,17 @@ else{
 	else{		
 		if(round == 3 || round == 6){
 			if (cur.a == 'harmony'){
-				hardes++;
+				hargood++;
 }
-			if (cur.a == 'dinner'){
-				disdin++;
+			if (cur.a == 'bad'){
+				disbad++;
 }}
 
 		$('#redx').show();
 		wrong = wrong+1;
 }}
 	if (code == 73){
-		if(cur.a == hamburger.a || cur.a == har1.a){
+		if(cur.a == bad[0].a || cur.a == har[0].a){
 			changePicture(items[counter]);
 			$('#redx').hide();
 			increaseCount();
@@ -151,11 +143,11 @@ else{
 }
 		else{
 		if(round == 3 || round == 6){
-			if (cur.a == 'dessert'){
-				hardes++;
+			if (cur.a == 'good'){
+				hargood++;
 }
 			if (cur.a == 'dissonance'){
-				disdin++;
+				disbad++;
 }}
 
 			$('#redx').show();
@@ -170,8 +162,10 @@ function increaseCount(){
 counter = counter + 1;
 if (counter == 20){
 	if (round == 6){
-		printRes();
+		finish();
+		start = 2;
 		return;
+
 }
 	$('#p1').text('Press E for '+E);
 	$('#p2').text('Press I for '+I);
@@ -218,11 +212,11 @@ function addClass(b,a){
 	if (a == 'harmony'){
 		har.push(b);
 }
-	if (a == 'dessert'){
-		des.push(b);
+	if (a == 'good'){
+		good.push(b);
 }
-	if (a == 'dinner'){
-		din.push(b);
+	if (a == 'bad'){
+		bad.push(b);
 }
 }
 
@@ -246,16 +240,47 @@ function createItems(cat){
 	changePicture(items[0]);
 }
 
-function printRes(){
-console.log('Harmony and Dessert '+hardin);
-console.log('Harmony and Dinner '+hardes);
-console.log('Dissonance and Dessert ' +disdes);
-console.log('Dissonance and Dinner ' +disdin);
+function finish(){
+	$('#pic1').hide();
+	$('#sound').attr('src','');
+	$('#p1').hide();
+	$('#p2').hide();
+	x = analyze();
+	$('#results').text('You '+x[0]+' associate '+x[1]);
 }
-var hamburger = new PicClass('dinner/hamburger.jpg','dinner')
-var steak = new PicClass('dinner/steak.jpg','dinner')
-var cake = new PicClass('dessert/cake.jpg','dessert')
-var icecream = new PicClass('dessert/icecream.jpg','dessert')
+
+function analyze(){
+	x = [hargood,harbad,disgood,disbad];
+	max = Math.max.apply(Math, x);
+	deg = ''
+	as = ''
+	if (max <2){
+		return ['do not','Emotion with Music'] 
+}
+	if (max <3){
+		deg = 'slightly';
+}
+	if (max < 5){
+		deg = 'moderately';
+}
+	if (max >4){
+		deg = 'highly';
+}
+	if (hargood == max){
+		as = 'Harmony with Good Emotions';
+}
+	if (harbad == max){
+		as = 'Harmony with Bad Emotions';
+}
+	if (disgood == max){
+		as = 'Dissonance with Good Emotions';
+}
+	if (disbad == max){
+		as = 'Dissonance with Bad Emotions';
+}
+	return [deg,as];
+}
+
 var har1 = new SoundClip('harmony/har1.m4a','harmony')
 var har2 = new SoundClip('harmony/har2.m4a','harmony')
 var har3 = new SoundClip('harmony/har3.m4a','harmony')
@@ -266,4 +291,30 @@ var dis2 = new SoundClip('dissonance/dis2.m4a','dissonance')
 var dis3 = new SoundClip('dissonance/dis3.m4a','dissonance')
 var dis4 = new SoundClip('dissonance/dis4.m4a','dissonance')
 var dis5 = new SoundClip('dissonance/dis5.m4a','dissonance')
+var anger = new PicClass('bad/anger.jpg','bad');
+var annoyed = new PicClass('bad/annoyed.jpg','bad');
+var cry = new PicClass('bad/cry.jpg','bad');
+var disgust = new PicClass('bad/disgust.jpg','bad');
+var fear = new PicClass('bad/fear.jpg','bad');
+var mean = new PicClass('bad/mean.jpg','bad');
+var pain = new PicClass('bad/pain.jpg','bad');
+var worry = new PicClass('bad/worry.jpg','bad');
+var child = new PicClass('good/child.jpg','good');
+var excited = new PicClass('good/excited.jpg','good');
+var fun = new PicClass('good/fun.jpg','good');
+var happy = new PicClass('good/happy.jpg','good');
+var joy = new PicClass('good/joy.jpg','good');
+var relief = new PicClass('good/relief.jpg','good');
+var smile = new PicClass('good/smile.jpg','good');
+var thumbs = new PicClass('good/thumbs.jpg','good');
+
+
+
+
+
+
+
+
+
+
 
